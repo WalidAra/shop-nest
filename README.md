@@ -2,7 +2,7 @@ No problem! I'll draft a README.md for your project based on the information you
 
 ### README.md
 
-```markdown
+
 # Shop Nest
 
 Shop Nest is an e-commerce website for electronics, offering a wide range of products including phones, laptops, PC gaming equipment, mouses, chairs, controllers, and more.
@@ -15,8 +15,7 @@ Shop Nest is an e-commerce website for electronics, offering a wide range of pro
 - **Caching**: Redis
 
 ## Project Structure
-
-```
+```bash
 Shop Nest/
 │
 ├── nodejs-backend/          # Node.js backend server
