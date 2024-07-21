@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  image     String?
+  email     String      @unique
+  password  String?
+  provider  Provider
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+  lastLoginAt DateTime? 
+
+  Order Order[]
+  Cart Cart?
+}
+
+model Category {
+  id        String      @id @default(uuid())
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+
+  Product Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String 
+  description String
+  price       Float
+  stock       Int
+  categoryId  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+  Category Category @relation(references: [id] , fields: [categoryId] , onDelete: Cascade)
+
+  OrderItem OrderItem[]
+
+  CartItem CartItem[]
+
+  @@index([name])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  totalAmount Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+  status OrderStatus
+
+  User User @relation(references: [id] , fields: [userId] , onDelete: Cascade)
+  OrderItem OrderItem[]
+}
+
+model OrderItem {
+  id        String      @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+
+  Product Product @relation(references: [id] , fields: [productId] , onDelete: Cascade)
+  Order Order @relation(references: [id] , fields: [orderId] , onDelete: Cascade)
+}
+
+model Cart {
+  id        String      @id @default(uuid())
+  userId    String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+
+  User User @relation(references: [id] , fields: [userId] , onDelete: Cascade)
+
+  CartItem CartItem[]
+}
+
+model CartItem {
+  id        String      @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+  Product Product @relation(references: [id] , fields: [productId] , onDelete: Cascade)
+  Cart Cart @relation(references: [id] , fields: [cartId] , onDelete: Cascade)
+
+  @@unique([cartId, productId])
+}
+
+model Admin {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  password  String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?
+  lastLoginAt DateTime?
+}
+
+enum OrderStatus {
+  PENDING
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum Provider {
+  GOOGLE
+  DIRECT
+}

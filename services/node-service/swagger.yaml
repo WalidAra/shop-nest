@@ -1,0 +1,425 @@
+openapi: 3.0.0
+info:
+  title: Shop-nest API
+  description: API documentation for Sync-chat
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api
+paths:
+  /health:
+    get:
+      summary: Check API health
+      description: Endpoint to check if the API is up and running
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "API is healthy"
+                  data:
+                    type: object
+                    example: null
+
+  /public/auth/user/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Endpoint to create a new user
+      requestBody:
+        description: User registration information
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+                recall:
+                  type: boolean
+                  example: true
+                name:
+                  type: string
+                  example: "John Doe"
+              required:
+                - email
+                - password
+                - recall
+                - name
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User created successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid-1234"
+                      bio:
+                        type: string
+                        example: "User bio"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      image:
+                        type: string
+                        example: "https://example.com/image.jpg"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-07-20T12:34:56Z"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      token:
+                        type: string
+                        example: "jwt-token"
+        '400':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Email already exists"
+                  data:
+                    type: object
+                    properties:
+                      itExist:
+                        type: boolean
+                        example: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+                  data:
+                    type: object
+                    example: null
+
+  /public/auth/user/login:
+    post:
+      tags:
+        - Authentication
+      summary: Log in a user
+      description: Endpoint to log in a user and get a JWT token
+      requestBody:
+        description: User login information
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+                recall:
+                  type: boolean
+                  example: true
+              required:
+                - email
+                - password
+                - recall
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successful"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid-1234"
+                      bio:
+                        type: string
+                        example: "User bio"
+                      email:
+                        type: string
+                        example: "user@example.com"
+                      image:
+                        type: string
+                        example: "https://example.com/image.jpg"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-07-20T12:34:56Z"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      token:
+                        type: string
+                        example: "jwt-token"
+        '400':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid email or password"
+                  data:
+                    type: object
+                    example: null
+        '402':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found"
+                  data:
+                    type: object
+                    example: null
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+                  data:
+                    type: object
+                    example: null
+  /public/auth/admin/login:
+    post:
+      tags:
+        - Authentication Admin
+      summary: Admin Login
+      description: Authenticate an admin user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successful"
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "jwt-token"
+        '400':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid email or password"
+                  data:
+                    type: object
+                    example: null
+        '402':
+          description: Admin not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Admin not found"
+                  data:
+                    type: object
+                    example: null
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+                  data:
+                    type: object
+                    example: null
+
+  /public/auth/admin/register:
+    post:
+      tags:
+        - Authentication Admin
+      summary: Admin Registration
+      description: Register a new admin user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Registration successful"
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "jwt-token"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid input"
+                  data:
+                    type: object
+                    example: null
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Email already exists"
+                  data:
+                    type: object
+                    example: null
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+                  data:
+                    type: object
+                    example: null
